@@ -1,0 +1,18 @@
+<form [formGroup]="chatForm">
+  <h2>Chat</h2>
+  <div class="form-group">
+    <label for="chat">Person 1</label>
+    <textarea
+      formControlName="userChat"
+      id="chat"
+      cols="30"
+      rows="8"
+      placeholder="Enter your message here..."
+      class="form-control"
+    ></textarea>
+  </div>
+  <div class="btn-sec">
+    <button class="btn">Send</button>
+  </div>
+  {{ chatForm.value | json }}
+</form>
