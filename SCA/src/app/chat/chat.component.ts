@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Form, FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 
 @Component({
   selector: 'app-chat',
@@ -7,11 +7,45 @@ import { Form, FormBuilder } from '@angular/forms';
   styleUrls: ['./chat.component.css'],
 })
 export class ChatComponent implements OnInit {
+  chatForm = new FormGroup({});
+
   constructor(private fb: FormBuilder) {}
 
-  chatForm = this.fb.group({
-    userChat: [''],
-  });
+  get userChat() {
+    return this.chatForm.get('userChat');
+  }
 
-  ngOnInit(): void {}
+  get anotherChats() {
+    return this.chatForm.get('anotherChats') as FormArray;
+  }
+
+  addAnoterChat() {
+    this.anotherChats.push(
+      this.fb.control('', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(200),
+      ])
+    );
+  }
+
+  ngOnInit() {
+    this.chatForm = this.fb.group({
+      userChat: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(200),
+        ],
+      ],
+      anotherChats: this.fb.array([]),
+    });
+  }
+
+  onSubmit() {
+    console.log(this.chatForm.value);
+
+    this.chatForm.reset();
+  }
 }
