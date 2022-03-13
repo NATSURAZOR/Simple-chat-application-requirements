@@ -1,5 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
+import {
+  FormBuilder,
+  Validators,
+  FormGroup,
+  FormArray,
+  FormArrayName,
+} from '@angular/forms';
+import { SharedService } from '../shared.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
@@ -8,44 +16,50 @@ import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 })
 export class ChatComponent implements OnInit {
   chatForm = new FormGroup({});
+  clickEventSuscription: Subscription = new Subscription();
+  private maxChats = 0;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private sharedService: SharedService) {
+    this.clickEventSuscription = this.sharedService
+      .getClickEvent()
+      .subscribe(() => {
+        this.addAnoterChat();
+      });
+  }
 
-  get userChat() {
-    return this.chatForm.get('userChat');
+  get sendetChats() {
+    return this.chatForm.get('sendetChats') as FormArray;
   }
 
   get anotherChats() {
     return this.chatForm.get('anotherChats') as FormArray;
   }
 
+  clickMe() {
+    this.sharedService.sendClickEvent();
+  }
+
   addAnoterChat() {
-    this.anotherChats.push(
-      this.fb.control('', [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(200),
-      ])
-    );
+    if (this.maxChats < 9) {
+      this.anotherChats.push(
+        this.fb.control('', [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(200),
+        ])
+      );
+      this.maxChats += 1;
+    }
   }
 
   ngOnInit() {
     this.chatForm = this.fb.group({
-      userChat: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(200),
-        ],
-      ],
       anotherChats: this.fb.array([]),
+      sendetChats: this.fb.array([]),
     });
   }
 
   onSubmit() {
     console.log(this.chatForm.value);
-
-    this.chatForm.reset();
   }
 }
