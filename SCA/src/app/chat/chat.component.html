@@ -1,43 +1,5 @@
-<form [formGroup]="chatForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="chatForm">
   <h2>Chat</h2>
-
-  <div class="form-group">
-    <label for="chat"></label>
-    <textarea
-      [class.is-invalid]="userChat?.invalid && userChat?.touched"
-      formControlName="userChat"
-      id="chat"
-      cols="30"
-      rows="8"
-      placeholder="Enter your message here..."
-      class="form-control"
-    >
-    <legend>Person 1</legend></textarea
-    >
-    <div *ngIf="userChat?.invalid && userChat?.touched" class="errors-section">
-      <div *ngIf="userChat?.errors?.['required']" class="text-danger">
-        *Chat message is required
-      </div>
-      <div *ngIf="userChat?.errors?.['minlength']" class="text-danger">
-        *Chat message must have at least 2 characters.
-      </div>
-      <div *ngIf="userChat?.errors?.['maxlength']" class="text-danger">
-        *Chat message must be smaller than 20 characters.
-      </div>
-    </div>
-
-    <button
-      [disabled]="!userChat?.valid || !anotherChats?.valid"
-      class="btn"
-      type="submit"
-    >
-      SEND
-    </button>
-  </div>
-
-  <div *ngIf="!userChat?.valid" class="btn-danger">
-    <p>*Complete the form to enable button.</p>
-  </div>
   <div
     formArrayName="anotherChats"
     *ngFor="let chat of anotherChats.controls; let i = index"
@@ -64,7 +26,12 @@
       </div>
     </div>
 
-    <button [disabled]="!chat?.valid || !chat?.valid" class="btn" type="submit">
+    <button
+      (click)="onSubmit()"
+      [disabled]="!chat?.valid || !chat?.valid"
+      class="btn"
+      type="submit"
+    >
       SEND
     </button>
     <div *ngIf="!chat?.valid" class="btn-danger">
@@ -72,5 +39,19 @@
     </div>
   </div>
 
-  {{ chatForm.value | json }}
+  <!-- {{ chatForm.value | json }} -->
 </form>
+
+<section class="chat-section">
+  <header>Chat Window</header>
+  <div class="sended-chats">
+    <!-- <div
+      formArrayName="anotherChats"
+      *ngFor="let chat of anotherChats.controls; let i = index"
+    >
+      <div>
+        <p>{{ chat.value }}</p>
+      </div> -->
+    <!-- </div> -->
+  </div>
+</section>
